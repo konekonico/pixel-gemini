@@ -6,6 +6,7 @@ Logs into a Gmail account, navigates to Google One, detects the
 """
 
 import logging
+import os
 import time
 import re
 from urllib.parse import urlparse
@@ -46,6 +47,11 @@ def _build_driver(profile: DeviceProfile) -> webdriver.Chrome:
     options.add_argument("--disable-notifications")
     options.add_argument("--window-size=390,844")  # Pixel 10 Pro screen size
     options.add_argument(f"--user-agent={profile.user_agent}")
+
+    # Use Chromium binary if available (Bolt provides Chromium, not Google Chrome)
+    chromium_path = "/usr/bin/chromium"
+    if os.path.isfile(chromium_path):
+        options.binary_location = chromium_path
 
     # Mobile emulation – Pixel 10 Pro viewport
     mobile_emulation = {
